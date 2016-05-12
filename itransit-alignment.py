@@ -129,9 +129,10 @@ if typealignment=="auto":
 
     ql=solution["x"]
     qs_s,ds_s,b,m,y0,r,logp,s=tdSlope(ql,params)
+    angvel=np.abs(m)
 
     print TAB*0,"Motion properties from automatic alignment:"
-    print TAB*1,"Angular velocity (R/h) = ",np.abs(m)
+    print TAB*1,"Angular velocity (R/h) = ",angvel
     print TAB*1,"Fit r = ",r
     print TAB*1,"log(p) = ",logp
     print TAB*1,"Impact parameter, b = ",b
@@ -183,6 +184,7 @@ else:
     #SORT IMAGES ACPATHING TO TIME
     #==================================================
     it=times.argsort()
+
     images_s=[images[i] for i in it]
 
     times_s=times[it]
@@ -202,9 +204,9 @@ else:
     #==================================================
     #ROTATION ANGLE
     #==================================================
-    qs_s=APSs[it]*DEG-APs[it]*DEG
-    status="success"
+    qs_s=APSs[it]*DEG
 
+    status="success"
     print TAB*1,"Solution status:",status
 
     print TAB*0,"Solution:"
@@ -263,6 +265,39 @@ for i in xrange(nimages):
 
 aligned="%s/scratch/aligned.png"%targetdir
 Aligned.save(aligned)
+
+#############################################################
+#PLOT SOLUTION IN CASE OF SUNSPOT ALIGN
+#############################################################
+if typealignment=="spot":
+
+    it=times_s.argsort()
+
+    times_t=times_s[it]
+    rmercs_t=rmercs_s[it]
+
+    ts_t=np.zeros_like(times_s)
+    ds_t=np.zeros_like(times_s)
+    for i in xrange(1,nimages):
+        ts_t[i]=times_t[i]-times_t[0]
+        ds_t[i]=norm(rmercs_t[i]-rmercs_t[0])/Rcommon
+
+    m,y0,r,p,s=linregress(ts_t,ds_t)
+    angvel=np.abs(m)
+
+    tms=np.linspace(ts_t.min(),ts_t.max(),100)
+    dms=m*tms+y0
+
+    #PLOT
+    fig=plt.figure()
+    ax=fig.gca()
+    ax.plot(ts_t,ds_t,"rs",ms=20,mec='none')
+    ax.plot(tms,dms,"r-",label=r"Linear fit, $\dot\theta$ = %.4f $\theta_\odot$/hour"%(m))
+    ax.grid()
+    ax.legend(loc='best')
+    ax.set_xlabel("Time from reference position (hours)")
+    ax.set_ylabel(r"Distance from reference position (apparent solar radii, $\theta_\odot$)")
+    fig.savefig("%s/scratch/alignment-plot.png"%targetdir)
 
 #############################################################
 #PATH PROPERTIES
@@ -345,13 +380,18 @@ properties=dict(
     R=Rcommon,
     times=times_s[it].tolist(),
 
-    #Mercury positions
+    #Mercury positions and radius
     rmercs=rmercs_s[it].tolist(),
+    rp=rps_s.mean(),
 
     #Sunspot positions
     rspots=rspots_s[it].tolist(),
     
     #Coord equation coefficients
-    pathcoef=[mp,bp]
+    pathcoef=[mp,bp],
+    
+    #Angular velocity
+    angvel=angvel
+
 )
 dict2json(properties,jfile)

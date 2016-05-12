@@ -174,6 +174,9 @@ The output of the alignment process is:
             
             #Coord equation coefficients
             pathcoef: slope m and intercept b
+
+	    #Angular velocity
+	    angvel: in solar radius per hour
         )
 
       List are sorted according to time.
