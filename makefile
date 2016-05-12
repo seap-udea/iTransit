@@ -1,8 +1,7 @@
-DATABASE=Aristarchus
-BACKDIR=data/dump
-
 clean:
-	find . -name "*~" -exec rm {} \;
+	@echo "Cleaning..."
+	@find . -name "*~" -exec rm {} \;
+	@find . -name "*.pyc" -exec rm {} \;
 
 cleandata:
 	@rm -r data/Aristarco6/*

@@ -178,3 +178,18 @@ The output of the alignment process is:
 
       List are sorted according to time.
 
+Example
+-------
+
+We provide with the package a set of images of the transit of Mercury
+of 2006.  The images has been especially prepared to combine images
+with different orientations, fractions of the solar disk and
+resolutions.  The position of Mercury and a sunspot has been already
+determined.
+
+To perform the alignment run:
+
+   $ for img in examples/*.png;do python itransit-crop.py $img;done
+
+   $ python itransit-alignment.py auto examples examples/*.png
+

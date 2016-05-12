@@ -261,7 +261,7 @@ for i in xrange(nimages):
 
     j+=1
 
-aligned="%s/scratch/aligned.png"
+aligned="%s/scratch/aligned.png"%targetdir
 Aligned.save(aligned)
 
 #############################################################
