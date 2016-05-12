@@ -189,7 +189,7 @@ determined.
 
 To perform the alignment run:
 
-   $ for img in examples/*.png;do python itransit-crop.py $img;done
+   	   $ for img in examples/*.png;do python itransit-crop.py $img;done
 
-   $ python itransit-alignment.py auto examples examples/*.png
+   	   $ python itransit-alignment.py auto examples examples/*.png
 
