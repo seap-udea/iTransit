@@ -19,7 +19,6 @@ import re
 import itertools as it
 from PIL import Image,ImageDraw
 
-
 #############################################################
 # MACROS
 #############################################################
@@ -31,6 +30,21 @@ TAB="\t"
 #############################################################
 DEG=np.pi/180
 RAD=180/np.pi
+
+#==================================================
+#ASTRONOMICAL CONSTANTS
+#==================================================
+#EARTH
+MINUTE=60.0
+HOUR=60*MINUTE
+DAY=24*HOUR
+YEAR=365.256363004*DAY
+
+#MERCURY
+PMERC=87.969*DAY
+
+RSUN=6.957e5 # km
+AU=1.496e8 # km
 
 #############################################################
 # ROUTINES
@@ -427,4 +441,10 @@ def fileProperties(mfile):
     fname="".join(parts[:-1])
     return mdir,name,fname,ext
     
-    
+def dec2sex(time):
+    h=int(time)
+    mf=(time-h)*60
+    m=int(mf)
+    sf=(mf-m)*60
+    s=int(sf)
+    return h,m,s

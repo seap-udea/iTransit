@@ -157,3 +157,10 @@ meanex/=(1.0*nex)
 
         #Option for rotation
         reshape=False
+
+e=0.2
+rhoc=0.8
+sinT=np.sin(tT*HOUR*np.pi*np.sqrt(1-e**2)/(Psyn*rhoc))
+a2=((1+p)**2-B**2)/(rhoc**2*sinT**2)+B**2/rhoc**2
+a=np.sqrt(a2)
+print a*RSUN/AU
