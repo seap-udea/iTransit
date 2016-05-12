@@ -164,3 +164,4 @@ sinT=np.sin(tT*HOUR*np.pi*np.sqrt(1-e**2)/(Psyn*rhoc))
 a2=((1+p)**2-B**2)/(rhoc**2*sinT**2)+B**2/rhoc**2
 a=np.sqrt(a2)
 print a*RSUN/AU
+
