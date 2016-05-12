@@ -1,4 +1,4 @@
-from aristarchus import *
+from itransit import *
 #############################################################
 # CONSTANTS
 #############################################################
@@ -7,8 +7,10 @@ from aristarchus import *
 # INPUTS
 #############################################################
 typealignment=argv[1]
-imagefiles=argv[2:]
+targetdir=argv[2]
+imagefiles=argv[3:]
 nimages=len(imagefiles)
+system("mkdir -p %s/scratch"%(targetdir))
 
 #############################################################
 # READ PROPERTIES
@@ -49,7 +51,6 @@ for imagefile in imagefiles:
     rspots+=[conf["rspot"]]
     rsps+=[conf["rsp"]]
     APSs+=[conf["APS"]]
-
     
     crop="%s/scratch/%s-crop.png"%(obsdir,fname)
     cw,ch=Image.open(crop).size
@@ -169,7 +170,7 @@ if typealignment=="auto":
     ax.legend(loc='best')
     ax.set_xlabel("Time from reference position (hours)")
     ax.set_ylabel(r"Distance from reference position (apparent solar radii, $\theta_\odot$)")
-    fig.savefig("%s/scratch/alignment-result.png"%obsdir)
+    fig.savefig("%s/scratch/alignment-plot.png"%targetdir)
 
 else:
 
@@ -242,7 +243,7 @@ for i in xrange(nimages):
     rspot[0]*=sx;rspot[1]*=sy
     
     #ROTATE IMAGE
-    rotated="%s/scratch/%s-rotated.%s"%(obsdir,fname,ext)
+    rotated="%s/scratch/%s-rotated.%s"%(targetdir,fname,ext)
     Rotated=Resize.rotate(qs_s[i]*RAD)
     Rotated=Image.composite(Rotated,Background,Rotated)
     Rotated.save(rotated)
@@ -260,7 +261,7 @@ for i in xrange(nimages):
 
     j+=1
 
-aligned="%s/scratch/aligned.%s"%(obsdir,ext)
+aligned="%s/scratch/aligned.png"
 Aligned.save(aligned)
 
 #############################################################
@@ -280,7 +281,7 @@ print TAB*1,"log(p-value): ",np.log(pp)
 #############################################################
 #ALIGNMENT DEBUG
 #############################################################
-debug="%s/scratch/aligned-debug.%s"%(obsdir,ext)
+debug="%s/scratch/aligned-debug.%s"%(targetdir,ext)
 fig,ax=imgFigure(np.asarray(Aligned))
 
 xs=np.linspace(0,cw,100)
@@ -297,7 +298,7 @@ fig.savefig(debug)
 #############################################################
 #FINAL ALIGNMENT
 #############################################################
-aligned="%s/scratch/final-aligned.%s"%(obsdir,ext)
+aligned="%s/scratch/aligned-final.%s"%(targetdir,ext)
 Aligned=Aligned.rotate(qimg*RAD)
 Aligned=Image.composite(Aligned,Background,Aligned)
 Aligned.save(aligned)
@@ -316,7 +317,7 @@ qimg=np.arctan(mp)
 #############################################################
 #ALIGNMENT DEBUG
 #############################################################
-debug="%s/scratch/final-aligned-debug.%s"%(obsdir,ext)
+debug="%s/scratch/aligned-final-debug.%s"%(targetdir,ext)
 fig,ax=imgFigure(np.asarray(Aligned))
 
 xs=np.linspace(0,cw,100)
@@ -334,13 +335,14 @@ fig.savefig(debug)
 # SAVE ALIGNMENT RESULT
 #############################################################
 it=times_s.argsort()
-jfile="%s/scratch/aligned.json"%(obsdir)
+jfile="%s/scratch/aligned.json"%(targetdir)
 properties=dict(
     #Images
     imagefiles=[images_s[i]["file"] for i in it],
     typealignment=typealignment,
     size=[wcommon,hcommon],
     rcen=rcen.tolist(),
+    R=Rcommon,
     times=times_s[it].tolist(),
 
     #Mercury positions
