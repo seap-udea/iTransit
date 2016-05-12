@@ -1,5 +1,5 @@
 iTransit
-********
+========
 
 This package of python sripts is intended to analyze images of a
 planetary transit (Venus or Mercury transit).
